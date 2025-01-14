@@ -9,6 +9,13 @@ const io = new Server(server);
 app.use(express.static('public'));
 
 let players = [];
+let currentActivePlayerIndex = 0;
+
+function switchActivePlayer() {
+    currentActivePlayerIndex = currentActivePlayerIndex === 0 ? 1 : 0;
+    const activePlayer = players[currentActivePlayerIndex];
+    io.emit('updateActivePlayer', activePlayer.id);
+}
 // Handle socket connection 
 io.on('connection', (socket) => {
     // console.log('A user connected:', socket.id);
@@ -20,8 +27,13 @@ io.on('connection', (socket) => {
         if (players.length < 2) {
             const playerRole = players.length === 0 ? "Player 1" : "Player 2";
             players.push({ id: socket.id, name: data.name, role: playerRole });
+            socket.emit('assignRole', { role: playerRole });
             io.emit('updatePlayers', players);
             console.log(`✅ ${data.name} joined as ${playerRole} ---> ID: ${socket.id}`);
+
+            if (players.length === 2) {
+                io.emit('updateActivePlayer', players[currentActivePlayerIndex].id);
+            }
         } else {
             socket.emit('gameFull');
         }
@@ -30,16 +42,23 @@ io.on('connection', (socket) => {
     // Handle dice roll event
     socket.on('rollDice', (diceNum) => {  // rolldice is the event and diceRolled is the event listener
         io.emit('diceRolled', diceNum);
+        // switch player if dice rolls to 1
+        if (diceNum === 1) {
+            switchActivePlayer();
+        }
     });
 
     // Handle score hold event
     socket.on('holdScore', (data) => {
         io.emit('scoreHeld', data);
+        switchActivePlayer();
     });
 
     // Handle new game event
     socket.on('resetGame', () => {
         io.emit('gameReset');
+        currentActivePlayerIndex = 0;
+        io.emit('updateActivePlayer', players[currentActivePlayerIndex].id);
     });
 
     // Handle disconnect event

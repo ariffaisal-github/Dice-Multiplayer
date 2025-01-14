@@ -10,19 +10,26 @@ if (!playerName) {
 socket.emit('playerJoined', { name: playerName });
 
 
-// socket.on('assignRole', (data) => {
-//     // alert(`You are ${data.role}`);
-//     if(data.role === "Player 1") {
-//         document.querySelector("#name--0").textContent = data.players[0].name;
-//         p1Name = data.players[0].name;
-//     }
-//     if(data.role === "Player 2") {
-//         document.querySelector("#name--0").textContent = data.players[0].name;
-//         document.querySelector("#name--1").textContent = data.players[1].name;
-//         p1Name = data.players[0].name;
-//         p2Name = data.players[1].name
-//     }
-// });
+let playerId = null;
+
+socket.on('assignRole', (data) => {
+    playerId = socket.id;
+    if(data.role === "Player 1") {
+        document.querySelector("#name--0").textContent = data.name;
+    } else {
+        document.querySelector("#name--1").textContent = data.name;
+    }
+});
+
+socket.on('updateActivePlayer', (activePlayerId) => {
+    if (activePlayerId === playerId) {
+        btnRoll.disabled = false;
+        btnHold.disabled = false;
+    } else {
+        btnRoll.disabled = true;
+        btnHold.disabled = true;
+    }
+});
 
 socket.on('updatePlayers', (players) => {
     if (players[0]) {
