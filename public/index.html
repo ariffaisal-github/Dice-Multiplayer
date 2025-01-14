@@ -10,6 +10,10 @@
     <title>Dice Multiplayer</title>
   </head>
   <body>
+    <!-- add audio background music -->
+    <audio id="bgmusic" autoplay loop muted>
+      <source src="mingle_song.mp3" type="audio/mpeg">
+    </audio>
     <main>
       <section class="player player--0 player--active">
         <h2 class="name" id="name--0"></h2>
@@ -33,6 +37,15 @@
       <button class="btn btn--roll">🎲 Roll dice</button>
       <button class="btn btn--hold">📥 Hold</button>
     </main>
+    <script>
+      document.body.addEventListener('click', () => {
+        const bgMusic = document.getElementById('bgmusic');
+        bgMusic.muted = false; // Unmute after user interaction
+        bgMusic.volume = 0.01;
+        bgMusic.currentTime = 0;
+        bgMusic.play();
+      });      
+    </script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
   </body>
