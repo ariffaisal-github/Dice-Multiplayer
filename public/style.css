@@ -27,7 +27,7 @@ main {
   position: relative;
   width: 100rem;
   height: 60rem;
-  background-color: rgba(255, 255, 255, 0.35);
+  background-color: rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(200px);
   filter: blur();
   box-shadow: 0 3rem 5rem rgba(0, 0, 0, 0.25);
@@ -68,7 +68,7 @@ main {
   background-color: rgba(255, 255, 255, 0.4);
 }
 .player--active .name {
-  font-weight: 700;
+  font-weight: 900;
 }
 .player--active .score {
   font-weight: 400;

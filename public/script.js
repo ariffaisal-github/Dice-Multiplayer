@@ -2,6 +2,43 @@
 
 const socket = io();
 
+// Prompt for player's name when the page loads
+let playerName = prompt("Please enter your name:");
+if (!playerName) {
+    playerName = `Anonymous${Math.floor(Math.random()*33)+11}`; // Fallback if no name is provided
+}
+socket.emit('playerJoined', { name: playerName });
+
+
+// socket.on('assignRole', (data) => {
+//     // alert(`You are ${data.role}`);
+//     if(data.role === "Player 1") {
+//         document.querySelector("#name--0").textContent = data.players[0].name;
+//         p1Name = data.players[0].name;
+//     }
+//     if(data.role === "Player 2") {
+//         document.querySelector("#name--0").textContent = data.players[0].name;
+//         document.querySelector("#name--1").textContent = data.players[1].name;
+//         p1Name = data.players[0].name;
+//         p2Name = data.players[1].name
+//     }
+// });
+
+socket.on('updatePlayers', (players) => {
+    if (players[0]) {
+        document.querySelector("#name--0").textContent = players[0].name;
+        document.querySelector("#name--1").textContent = "";
+    }
+    if (players[1]) {
+        document.querySelector("#name--1").textContent = players[1].name;
+    }
+});
+
+socket.on('gameFull', () => {
+    alert("The game is already full. Please try again later.");
+});
+
+
 let score = 0;
 const winningScore = 100;
 const btnNew = document.querySelector(".btn--new");
